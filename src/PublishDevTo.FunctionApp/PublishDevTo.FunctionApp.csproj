@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
+
+    <AssemblyName>DevRelKr.PublishDevTo.FunctionApp</AssemblyName>
+    <RootNamespace>DevRelKr.PublishDevTo.FunctionApp</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Forem.DevTo" Version="0.9.4" />
+    <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.1.1" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
+    <!-- <PackageReference Include="PlaywrightSharp" Version="0.170.2" /> -->
+    <PackageReference Include="YamlDotNet" Version="9.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+  <!-- <Target Name="CopyPlayWrightRuntimes" AfterTargets="Build">
+    <Exec WorkingDirectory="$(SolutionDir)" Command="pwsh -File ./Copy-PlayWright.ps1 -BaseDirectory $(TargetDir)" />
+    <ItemGroup>
+      <Runtimes Include="$(TargetDir)runtimes/**/*.*"/>
+    </ItemGroup>
+
+    <Copy
+      SourceFiles="@(Runtimes)"
+      DestinationFiles="@(Runtimes->'$(TargetDir)bin/runtimes/%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target> -->
+
+</Project>

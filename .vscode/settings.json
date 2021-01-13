@@ -1,0 +1,14 @@
+{
+    "azureFunctions.deploySubpath": "src/PublishDevTo.FunctionApp/bin/Release/netcoreapp3.1/publish",
+    "azureFunctions.projectLanguage": "C#",
+    "azureFunctions.projectRuntime": "~3",
+    "debug.internalConsoleOptions": "neverOpen",
+    "azureFunctions.preDeployTask": "publish",
+    "cSpell.words": [
+        "Deserialise",
+        "Serialise",
+        "Serialisers",
+        "deserialised",
+        "deserialiser"
+    ]
+}
