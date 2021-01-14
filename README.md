@@ -5,7 +5,10 @@ This is a scheduler, in a given date and time, to publish an article to [https:/
 
 ## Getting Started ##
 
-## Keys/Secrets ##
+To use this scheduler, 1) deploy the app then 2) send an HTTP API request to the app by following the instructions.
+
+
+### Keys/Secrets ###
 
 To deploy this app onto Azure, you need a few things beforehand.
 
@@ -25,7 +28,7 @@ To deploy this app onto Azure, you need a few things beforehand.
     ```
 
 
-## GitHub Secrets for CI/CD ##
+### GitHub Secrets for CI/CD ###
 
 If you want to automate your CI/CD pipeline through [GitHub Actions](https://docs.github.com/en/free-pro-team@latest/actions), Create the following [GitHub Secrets](https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets) on your forked repository:
 
@@ -36,7 +39,7 @@ If you want to automate your CI/CD pipeline through [GitHub Actions](https://doc
 * `RESOURCE_NAME`: Set your resource name&ndash;this will be used for all your Azure resources including [Storage Account](https://docs.microsoft.com/azure/storage/common/storage-account-overview?WT.mc_id=github-0000-juyoo), [Application Insights](https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview?WT.mc_id=github-0000-juyoo), [Azure Monitor](https://docs.microsoft.com/azure/azure-monitor/overview?WT.mc_id=github-0000-juyoo), [Consumption Plan](https://docs.microsoft.com/azure/azure-functions/consumption-plan?WT.mc_id=github-0000-juyoo) and [Azure Functions](https://docs.microsoft.com/azure/azure-functions/functions-overview?WT.mc_id=github-0000-juyoo).
 
 
-## Manual Deployment ##
+### Manual Deployment ###
 
 Alternatively, you can run manual provision and app deployment using Azure CLI. Run the following command:
 
@@ -66,7 +69,7 @@ az functionapp deployment source config-zip \
 ```
 
 
-## Schedule Your Article for Publish ##
+### Schedule Your Article for Publish ###
 
 You have your dev.to article temporarily saved and know the preview URL, with this preview URL, send an HTTP API request to your scheduler app deployed above:
 
@@ -91,7 +94,7 @@ curl -X POST 'https://<function_app_name>.azurewebsites.net/api/orchestrators/sc
 ```
 
 
-## Check Your Scheduling Status ##
+### Check Your Scheduling Status ###
 
 Once you schedule your article, you can check its status with the following command:
 
