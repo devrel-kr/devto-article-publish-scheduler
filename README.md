@@ -9,15 +9,15 @@ This is a scheduler, in a given date and time, to publish an article to [https:/
 
 To deploy this app onto Azure, you need a few things beforehand.
 
-* API key for dev.to: Go to [https://dev.to/settings/account](https://dev.to/settings/account) and generate a new API key.
-* Azure credentials: Use your existing Azure account or [create a free account](https://azure.microsoft.com/free/?WT.mc_id=github-0000-juyoo), if you don't have one. Then run the following [Azure CLI](https://docs.microsoft.com/cli/azure/what-is-azure-cli?WT.mc_id=github-0000-juyoo) command to get your Azure credentials:
+* **API key for [dev.to](https://dev.to)**: Go to [https://dev.to/settings/account](https://dev.to/settings/account) and generate a new API key.
+* **Azure credentials**: Use your existing Azure account or [create a free account](https://azure.microsoft.com/free/?WT.mc_id=github-0000-juyoo), if you don't have one. Then run the following [Azure CLI](https://docs.microsoft.com/cli/azure/what-is-azure-cli?WT.mc_id=github-0000-juyoo) command to get your Azure credentials:
     ```bash
     az ad sp create-for-rbac \
         --name "<service_principal_name>" \
         --sdk-auth \
         --role contributor
     ```
-* Azure resource group: Use your existing Azure resource group or create a new one by running the Azure CLI command:
+* **Azure resource group**: Use your existing Azure resource group or create a new one by running the Azure CLI command:
     ```bash
     az group create \
         -n "<resource_group_name>" \
