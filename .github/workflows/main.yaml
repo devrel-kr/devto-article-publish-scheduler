@@ -41,7 +41,7 @@ jobs:
       id: subscriptionId
       shell: pwsh
       run: |
-        subscriptionId=(${{ secrets.AZURE_CREDENTIALS }} | ConvertFrom-Json).subscriptionId
+        subscriptionId=(${{ secrets.AZURE_CREDENTIALS }} | ConvertTo-Json | ConvertFrom-Json).subscriptionId
 
         echo $subscriptionId
 
