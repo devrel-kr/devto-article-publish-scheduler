@@ -31,6 +31,9 @@ jobs:
         $branch = $segments[0]
         $version = $segments.Count -gt 0 ? $segments[1] : ""
 
+        echo $branch
+        echo $version
+
         echo "::set-output name=name::$branch"
         echo "::set-output name=version::$version"
 
@@ -41,7 +44,7 @@ jobs:
       id: subscriptionId
       shell: bash
       run: |
-        subscriptionId=$(echo ${{ toJSON(secrets.AZURE_CREDENTIALS) }} | jq -r ".subscriptionId")
+        subscriptionId=$(echo "${{ secrets.AZURE_CREDENTIALS }}" | jq -r ".subscriptionId")
 
         # echo "::add-mask::$subscriptionId"
         echo "::set-output name=value::$subscriptionId"
