@@ -41,7 +41,7 @@ jobs:
       id: subscriptionId
       shell: bash
       run: |
-        subscriptionId=$(echo '${{ toJSON(secrets.AZURE_CREDENTIALS) }}' | jq -r ".subscriptionId")
+        subscriptionId=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r ".subscriptionId")
 
         echo $subscriptionId
 
