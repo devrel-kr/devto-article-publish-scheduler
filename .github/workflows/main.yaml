@@ -6,6 +6,8 @@ on:
     - main
     - dev
     - feature/*
+    - hotfix/*
+    - release/*
   pull_request:
     branches:
     - dev
@@ -14,12 +16,24 @@ env:
   FUNCTIONAPP_PATH: 'src/PublishDevTo.FunctionApp'
 
 jobs:
-  arm_template_build_test:
-    name: 'ARM Templates Build & Test'
+  arm_template_build_test_deploy:
+    name: 'ARM Templates Build, Test & Deploy'
 
     runs-on: ubuntu-latest
 
     steps:
+    - name: Set branch and version
+      id: branch
+      shell: pwsh
+      run: |
+        $ref = "${{ github.event.ref }}" -replace "refs/heads/", ""
+        $segments = $ref -split "/"
+        $branch = $segments[0]
+        $version = $segments.Count -gt 0 ? $segments[1] : ""
+
+        echo "::set-output name=name::$branch"
+        echo "::set-output name=version::$version"
+
     - name: Checkout the repo
       uses: actions/checkout@v2
 
@@ -40,12 +54,52 @@ jobs:
       run: |
         echo 'Results: ${{ toJSON(fromJSON(steps.armtest.outputs.results)) }}'
 
-  fncapp_build_test:
-    name: 'FunctionApp Build & Test'
+    - name: Login to Azure
+      if: steps.branch.outputs.name == 'release'
+      uses: Azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Get subscription ID
+      if: steps.branch.outputs.name == 'release'
+      id: subscriptionId
+      shell: bash
+      run: |
+        subscriptionId=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r ".subscriptionId")
+
+        echo "::add-mask::$subscriptionId"
+        echo "::set-output name=value::$subscriptionId"
+
+    - name: Deploy ARM templates
+      if: steps.branch.outputs.name == 'release'
+      uses: Azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ steps.subscriptionId.outputs.value }}
+        resourceGroupName: ${{ secrets.RESOURCE_GROUP_NAME }}
+        deploymentName: 'devto'
+        template: 'resources/azuredeploy.json'
+        parameters: name=${{ secrets.RESOURCE_NAME }} functionAppEnvironment=${{ secrets.RESOURCE_FUNCTIONAPP_ENVIRONMENT }} devtoApiKey=${{ secrets.DEVTO_API_KEY }}
+
+  fncapp_build_test_deploy:
+    name: 'FunctionApp Build, Test & Deploy'
+    needs:
+    - arm_template_build_test_deploy
 
     runs-on: ubuntu-latest
 
     steps:
+    - name: Set branch and version
+      id: branch
+      shell: pwsh
+      run: |
+        $ref = "${{ github.event.ref }}" -replace "refs/heads/", ""
+        $segments = $ref -split "/"
+        $branch = $segments[0]
+        $version = $segments.Count -gt 0 ? $segments[1] : ""
+
+        echo "::set-output name=name::$branch"
+        echo "::set-output name=version::$version"
+
     - name: Checkout the repo
       uses: actions/checkout@v2
 
@@ -68,3 +122,55 @@ jobs:
       shell: bash
       run: |
         dotnet test . -c Release
+
+    - name: Create FunctionApp artifact
+      if: steps.branch.outputs.name == 'release'
+      shell: bash
+      run: |
+        dotnet publish ${{ env.FUNCTIONAPP_PATH }} -c Release -o published
+
+    - name: Login to Azure
+      if: steps.branch.outputs.name == 'release'
+      uses: Azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Get FunctionApp details
+      if: steps.branch.outputs.name == 'release'
+      id: functionapp
+      shell: bash
+      run: |
+        name=$(az resource list \
+          -g rg-devto-scheduler-krc \
+          --resource-type Microsoft.Web/sites \
+          --query "[0].name" -o tsv)
+
+        echo "::set-output name=name::$name"
+
+    - name: Get FunctionApp publish profile
+      if: steps.branch.outputs.name == 'release'
+      id: publishprofile
+      uses: aliencube/publish-profile-actions@v1
+      env:
+        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      with:
+        resourceGroupName: ${{ secrets.RESOURCE_GROUP_NAME }}
+        appName: ${{ steps.functionapp.outputs.name }}
+
+    - name: Deploy FunctionApp
+      if: steps.branch.outputs.name == 'release'
+      uses: Azure/functions-action@v1
+      with:
+        app-name: ${{ steps.functionapp.outputs.name }}
+        package: published
+        publish-profile: ${{ steps.publishprofile.outputs.profile }}
+
+    - name: Reset FunctionApp publish profile
+      if: steps.branch.outputs.name == 'release'
+      uses: aliencube/publish-profile-actions@v1
+      env:
+        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      with:
+        resourceGroupName: ${{ secrets.RESOURCE_GROUP_NAME }}
+        appName: ${{ steps.functionapp.outputs.name }}
+        reset: true
