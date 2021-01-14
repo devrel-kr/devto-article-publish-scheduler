@@ -37,17 +37,6 @@ jobs:
     - name: Checkout the repo
       uses: actions/checkout@v2
 
-    - name: Get subscription ID
-      id: subscriptionId
-      shell: bash
-      run: |
-        subscriptionId=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r ".subscriptionId")
-
-        echo $subscriptionId
-
-        # echo "::add-mask::$subscriptionId"
-        echo "::set-output name=value::$subscriptionId"
-
     - name: Run Bicep build
       uses: aliencube/bicep-build-actions@v0.1
       with:
@@ -70,6 +59,16 @@ jobs:
       uses: Azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Get subscription ID
+      if: steps.branch.outputs.name == 'release'
+      id: subscriptionId
+      shell: bash
+      run: |
+        subscriptionId=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r ".subscriptionId")
+
+        echo "::add-mask::$subscriptionId"
+        echo "::set-output name=value::$subscriptionId"
 
     - name: Deploy ARM templates
       if: steps.branch.outputs.name == 'release'
