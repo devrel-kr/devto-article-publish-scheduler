@@ -39,9 +39,9 @@ jobs:
 
     - name: Get subscription ID
       id: subscriptionId
-      shell: pwsh
+      shell: bash
       run: |
-        subscriptionId=(${{ toJSON(secrets.AZURE_CREDENTIALS) }} | ConvertFrom-Json).subscriptionId
+        subscriptionId=$(echo '${{ toJSON(secrets.AZURE_CREDENTIALS) }}' | jq -r ".subscriptionId")
 
         echo $subscriptionId
 
