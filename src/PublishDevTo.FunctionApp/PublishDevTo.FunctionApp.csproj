@@ -11,10 +11,10 @@
   <ItemGroup>
     <PackageReference Include="Forem.DevTo" Version="0.9.4" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.4.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
     <!-- <PackageReference Include="PlaywrightSharp" Version="0.170.2" /> -->
-    <PackageReference Include="YamlDotNet" Version="9.1.1" />
+    <PackageReference Include="YamlDotNet" Version="9.1.3" />
   </ItemGroup>
 
   <ItemGroup>
