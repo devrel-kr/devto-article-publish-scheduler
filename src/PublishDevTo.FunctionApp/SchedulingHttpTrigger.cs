@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using DevRelKr.PublishDevTo.FunctionApp.Models;
@@ -15,6 +16,8 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
+
+using ExecutionContext = Microsoft.Azure.WebJobs.ExecutionContext;
 
 namespace DevRelKr.PublishDevTo.FunctionApp
 {
@@ -97,7 +100,9 @@ namespace DevRelKr.PublishDevTo.FunctionApp
             log.LogInformation($"RequestID: {requestId}");
             log.LogInformation($"InvocationID: {invocationId}");
 
-            var status = (await starter.GetStatusAsync())
+            var noFilter = new OrchestrationStatusQueryCondition();
+            var status = (await starter.ListInstancesAsync(noFilter, CancellationToken.None))
+                         .DurableOrchestrationState
                          .OrderByDescending(p => p.Input.Value<DateTime>("schedule"));
             var result = new ContentResult()
             {

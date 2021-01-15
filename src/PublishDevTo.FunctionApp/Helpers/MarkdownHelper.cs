@@ -43,7 +43,7 @@ namespace DevRelKr.PublishDevTo.FunctionApp.Helpers
                                     .Select(p => p.Trim());
 
                 var frontmatter = segments.First();
-                var body = string.Join("\n---\n", segments.Skip(1));
+                var body = string.Join("\n\n---\n\n", segments.Skip(1));
 
                 return new[] { frontmatter, body };
             });
