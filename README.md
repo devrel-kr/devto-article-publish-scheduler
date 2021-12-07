@@ -3,6 +3,12 @@
 This is a scheduler, in a given date and time, to publish an article to [https://dev.to](https://dev.to).
 
 
+## Readings ##
+
+* 한국어: [Dev.To 웹사이트에 블로그 포스트 예약 발행해주는 도구 만들어 보기](https://blog.aliencube.org/ko/2021/01/20/devto-article-publish-scheduler/)
+* English: [Durable Functions to Schedule Publish to Dev.To](https://dev.to/azure/durable-functions-to-schedule-publish-to-dev-to-1d5a)
+
+
 ## Getting Started ##
 
 To use this scheduler, 1) deploy the app then 2) send an HTTP API request to the app by following the instructions.
